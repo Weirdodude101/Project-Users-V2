@@ -1,0 +1,2 @@
+peopleDatabase = "people/person_"
+
