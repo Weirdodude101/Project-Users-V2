@@ -10,11 +10,8 @@ personDict = {
 }
 """
     TODO:
-         - Finish create account
-         - Add Find account
          - Add Login account
          - Add admin console
-         - Add yaml creator
          - FINALLY (After all is done):
              - Clean up code to the best of my ability
 """
@@ -33,6 +30,10 @@ def setPeople(name):
         return None
     else:
         for x in range(0,numPeople):
+            path = os.path.isfile(peopleData + name + ".yaml")
+            if not path:
+                topText("Invalid account, heading back to start")
+                startMenu()
             person = loadYaml(peopleData + name + ".yaml")
             personDict[person["Username"]] = {
                 "Username": person["Username"],
@@ -45,7 +46,6 @@ def setPeople(name):
             }
 
 def startMenu():
-    clearConsole()
     print "Welcome to Project Users V2"
     print "1: Create an account"
     print "2: Find an account"
@@ -57,15 +57,11 @@ def startMenu():
     if option == "3": loginAccount()
     if option == "4": adminConsole()
     if option != "1" or option != "2" or option != "3" or option != "4":
-        clearConsole()
-        print "Invalid option, heading back to start"
-        print "-------------------------------------"
+        topText("Invalid option, heading back to start")
         startMenu()
 
 def createAccount():
-    clearConsole()
-    print "Welcome to create an account!"
-    print "You will need to enter some information"
+    topText("Welcome to create an account! Enter some information")
     username = raw_input("Enter a username: ")
     password = raw_input("Enter a password: ")
     fname = raw_input("Enter your first name: ")
@@ -76,13 +72,11 @@ def createAccount():
     newUser = Person(username, password, fname, lname, age, gender, hobby)
     personDict[username] = newUser.getInfo()
     createYaml("people/person_" + username + ".yaml",username)
-    clearConsole()
+    topText("Successfully created an account")
     startMenu()
 
 def findAccount():
-    clearConsole()
-    print "Find a person"
-    print "--------------------"
+    topText("Find a Person")
     name = raw_input("Enter the persons username: ")
     setPeople(name)
     person = personDict[name]
@@ -93,11 +87,11 @@ def findAccount():
     option = raw_input("Enter here: ")
     if option == "1": findAccount()
     if option == "2": createAccount()
-    if option == "3": startMenu()
-    if option != "1" or option != "2" or option != "3":
+    if option == "3":
         clearConsole()
-        print "Invalid option, heading back to start"
-        print "-------------------------------------"
+        startMenu()
+    if option != "1" or option != "2" or option != "3":
+        topText("Invalid option, heading back to start")
         startMenu()
 
 def printInfo(person):
@@ -111,6 +105,11 @@ def printInfo(person):
     print "Age: " + person["Age"]
     print "Gender: " + person["Gender"]
     print "############################"
+
+def topText(msg):
+    clearConsole()
+    print (msg)
+    print "----------------------------"
 
 def getNumPeople():
     path = 'people/'
