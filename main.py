@@ -10,7 +10,7 @@ personDict = {
 }
 """
     TODO:
-         - Add Login account
+         - Finish Login account
          - Add admin console
          - FINALLY (After all is done):
              - Clean up code to the best of my ability
@@ -24,16 +24,16 @@ else:
 	os.system("clear")
 
 def setPeople(name):
+    path = os.path.isfile(peopleData + name + ".yaml")
+    if not path:
+        topText("Invalid account, heading back to start")
+        startMenu()
     numPeople = getNumPeople()
     if numPeople < 0:
         print 'Less than 0 people'
         return None
     else:
         for x in range(0,numPeople):
-            path = os.path.isfile(peopleData + name + ".yaml")
-            if not path:
-                topText("Invalid account, heading back to start")
-                startMenu()
             person = loadYaml(peopleData + name + ".yaml")
             personDict[person["Username"]] = {
                 "Username": person["Username"],
@@ -42,7 +42,8 @@ def setPeople(name):
                 "LastName": person["LastName"],
                 "Age": person["Age"],
                 "Gender": person["Gender"],
-                "Hobby": person["Hobby"]
+                "Hobby": person["Hobby"],
+                "loggedIn": False
             }
 
 def startMenu():
@@ -93,6 +94,33 @@ def findAccount():
     if option != "1" or option != "2" or option != "3":
         topText("Invalid option, heading back to start")
         startMenu()
+
+def loginAccount():
+    topText("Login with your credentials")
+    username = raw_input("Enter your username: ")
+    password = raw_input("Enter your password: ")
+    setPeople(username)
+    person = personDict[username]
+    if username == person["Username"] and password == person["Password"]:
+        person["loggedIn"] = True
+        loggedIn(person)
+
+def loggedIn(person):
+    if person["loggedIn"] == False:
+        topText("This account is not logged in")
+        startMenu()
+
+    topText("Successfully Logged in")
+    print "1: Edit your account"
+    print "2: Logout"
+    option = raw_input("Enter here: ")
+    if option == "1": editAccount()
+    if option == "2": logout(person)
+    if option != "1" or option != "2":
+        topText("Invalid option, heading back to account page")
+        loggedIn(person)
+
+
 
 def printInfo(person):
     clearConsole()
