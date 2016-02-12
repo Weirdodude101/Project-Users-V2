@@ -6,8 +6,7 @@ import os
 import os.path
 peopleData = Localizer.peopleDatabase
 
-personDict = {
-}
+personDict = {}
 """
     TODO:
          - Finish Login account
