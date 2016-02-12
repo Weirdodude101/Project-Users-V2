@@ -23,29 +23,6 @@ else:
 	sys.stdout.write("\x1b]2;Project User\x07")
 	os.system("clear")
 
-def setPeople(name):
-    path = os.path.isfile(peopleData + name + ".yaml")
-    if not path:
-        topText("Invalid account, heading back to start")
-        startMenu()
-    numPeople = getNumPeople()
-    if numPeople < 0:
-        print 'Less than 0 people'
-        return None
-    else:
-        for x in range(0,numPeople):
-            person = loadYaml(peopleData + name + ".yaml")
-            personDict[person["Username"]] = {
-                "Username": person["Username"],
-                "Password": person["Password"],
-                "FirstName": person["FirstName"],
-                "LastName": person["LastName"],
-                "Age": person["Age"],
-                "Gender": person["Gender"],
-                "Hobby": person["Hobby"],
-                "loggedIn": False
-            }
-
 def startMenu():
     print "Welcome to Project Users V2"
     print "1: Create an account"
@@ -70,7 +47,8 @@ def createAccount():
     age = raw_input("Enter your age: ")
     gender = raw_input("Enter your gender: ")
     hobby = raw_input("Enter your hobby: ")
-    newUser = Person(username, password, fname, lname, age, gender, hobby)
+    desc = raw_input("Enter your description: ")
+    newUser = Person(username, password, fname, lname, age, gender, hobby, desc)
     personDict[username] = newUser.getInfo()
     createYaml("people/person_" + username + ".yaml",username)
     topText("Successfully created an account")
@@ -104,6 +82,9 @@ def loginAccount():
     if username == person["Username"] and password == person["Password"]:
         person["loggedIn"] = True
         loggedIn(person)
+    else:
+        topText("Invalid account, heading back to start")
+        startMenu()
 
 def loggedIn(person):
     if person["loggedIn"] == False:
@@ -114,13 +95,40 @@ def loggedIn(person):
     print "1: Edit your account"
     print "2: Logout"
     option = raw_input("Enter here: ")
-    if option == "1": editAccount()
+    if option == "1": editAccount(person)
     if option == "2": logout(person)
     if option != "1" or option != "2":
         topText("Invalid option, heading back to account page")
         loggedIn(person)
 
+def editAccount(person):
+    topText("Choose an option")
+    print "1: Change password"
+    print "2: Change description"
+    option = raw_input("Enter here: ")
+    if option == "1": changeInfo(person,"Password",True)
+    if option == "2": changeInfo(person,"Description",True)
+    if option == "3": loggedIn(person)
+    if option != "1" or option != "2" or option != "3":
+        topText("Invalid option, heading back to account page")
+        loggedIn(person)
 
+def changeInfo(person, attrb):
+    topText("Enter a new " + attrb.lower())
+    newInfo = raw_input("Enter here: ")
+    person[attrb] = newInfo
+    dumpYaml("people/person_" + person["Username"] + ".yaml",personDict[person["Username"]])
+    topText("Successfully changed your " + attrb.lower() + ", Heading back to previous page")
+    if fromLoginPage == True:
+        loggedIn(person)
+    else:
+        pass
+
+
+def logout(person):
+    person["loggedIn"] = False
+    topText("Successfully signed out, heading back to start")
+    startMenu()
 
 def printInfo(person):
     clearConsole()
@@ -132,7 +140,32 @@ def printInfo(person):
     print "Last name: " + person["LastName"]
     print "Age: " + person["Age"]
     print "Gender: " + person["Gender"]
+    print "Desc: " + person["Description"]
     print "############################"
+
+def setPeople(name):
+    path = os.path.isfile(peopleData + name + ".yaml")
+    if not path:
+        topText("Invalid account, heading back to start")
+        startMenu()
+    numPeople = getNumPeople()
+    if numPeople < 0:
+        print 'Less than 0 people'
+        return None
+    else:
+        for x in range(0,numPeople):
+            person = loadYaml(peopleData + name + ".yaml")
+            personDict[person["Username"]] = {
+                "Username": person["Username"],
+                "Password": person["Password"],
+                "FirstName": person["FirstName"],
+                "LastName": person["LastName"],
+                "Age": person["Age"],
+                "Gender": person["Gender"],
+                "Hobby": person["Hobby"],
+                "Description": person["Description"],
+                "loggedIn": False
+            }
 
 def topText(msg):
     clearConsole()
@@ -165,5 +198,6 @@ def clearConsole():
         os.system("cls")
     else:
         os.system("clear")
+
 clearConsole()
 startMenu()

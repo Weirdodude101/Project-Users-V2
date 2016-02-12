@@ -1,7 +1,7 @@
 import Localizer
 
 class Person:
-    def __init__(self,username,password,fname,lname,age,gender,hobby):
+    def __init__(self,username,password,fname,lname,age,gender,hobby,desc):
         self.username = username
         self.password = password
         self.fname = fname
@@ -9,6 +9,7 @@ class Person:
         self.age = age
         self.gender = gender
         self.hobby = hobby
+        self.desc = desc
 
     def getInfo(self):
         infoDict = {
@@ -18,6 +19,7 @@ class Person:
             "LastName": self.lname,
             "Age": self.age,
             "Gender": self.gender,
-            "Hobby": self.hobby
+            "Hobby": self.hobby,
+            "Description": self.desc
         }
         return infoDict
