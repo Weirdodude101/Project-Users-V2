@@ -113,7 +113,7 @@ def editAccount(person):
         topText("Invalid option, heading back to account page")
         loggedIn(person)
 
-def changeInfo(person, attrb):
+def changeInfo(person, attrb, fromLoginPage):
     topText("Enter a new " + attrb.lower())
     newInfo = raw_input("Enter here: ")
     person[attrb] = newInfo
