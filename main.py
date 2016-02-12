@@ -47,17 +47,19 @@ def createAccount():
     gender = raw_input("Enter your gender: ")
     hobby = raw_input("Enter your hobby: ")
     desc = raw_input("Enter your description: ")
+    lowUser = username.lower()
     newUser = Person(username, password, fname, lname, age, gender, hobby, desc)
-    personDict[username] = newUser.getInfo()
-    createYaml("people/person_" + username + ".yaml",username)
+    personDict[lowUser] = newUser.getInfo()
+    createYaml("people/person_" + username + ".yaml",lowUser)
     topText("Successfully created an account")
     startMenu()
 
 def findAccount():
     topText("Find a Person")
     name = raw_input("Enter the persons username: ")
+
     setPeople(name)
-    person = personDict[name]
+    person = personDict[name.lower()]
     printInfo(person)
     print "1: Find another person"
     print "2: Create an account"
@@ -94,32 +96,37 @@ def loggedIn(person):
     print "1: Edit your account"
     print "2: Logout"
     option = raw_input("Enter here: ")
-    if option == "1": editAccount(person)
+    if option == "1":
+        topText("Choose an option")
+        editAccount(person,False)
     if option == "2": logout(person)
     if option != "1" or option != "2":
         topText("Invalid option, heading back to account page")
         loggedIn(person)
 
-def editAccount(person):
-    topText("Choose an option")
+def editAccount(person, fromChangeInfo):
+    if fromChangeInfo == True:
+        topText("Choose an option")
     print "1: Change password"
     print "2: Change description"
+    print "3: Go back to account page"
     option = raw_input("Enter here: ")
     if option == "1": changeInfo(person,"Password",True)
     if option == "2": changeInfo(person,"Description",True)
-    if option == "3": loggedIn(person)
+    if option == "3":
+        loggedIn(person)
     if option != "1" or option != "2" or option != "3":
         topText("Invalid option, heading back to account page")
         loggedIn(person)
 
-def changeInfo(person, attrb, fromLoginPage):
+def changeInfo(person, attrb, fromEditAccPage):
     topText("Enter a new " + attrb.lower())
     newInfo = raw_input("Enter here: ")
     person[attrb] = newInfo
     dumpYaml("people/person_" + person["Username"] + ".yaml",personDict[person["Username"]])
     topText("Successfully changed your " + attrb.lower() + ", Heading back to previous page")
-    if fromLoginPage == True:
-        loggedIn(person)
+    if fromEditAccPage == True:
+        editAccount(person, False)
     else:
         pass
 
@@ -147,6 +154,7 @@ def setPeople(name):
     if not path:
         topText("Invalid account, heading back to start")
         startMenu()
+
     numPeople = getNumPeople()
     if numPeople < 0:
         print 'Less than 0 people'
@@ -154,7 +162,7 @@ def setPeople(name):
     else:
         for x in range(0,numPeople):
             person = loadYaml(peopleData + name + ".yaml")
-            personDict[person["Username"]] = {
+            personDict[person["Username"].lower()] = {
                 "Username": person["Username"],
                 "Password": person["Password"],
                 "FirstName": person["FirstName"],
