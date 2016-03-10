@@ -1,0 +1,9 @@
+Age: '14'
+Description: My name is Frank
+FirstName: Frank
+Gender: male
+Hobby: programming
+LastName: young
+Password: password
+Username: frank
+loggedIn: true

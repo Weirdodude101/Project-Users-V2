@@ -78,20 +78,16 @@ def loginAccount():
     topText("Login with your credentials")
     username = raw_input("Enter your username: ")
     password = raw_input("Enter your password: ")
+    username = username.lower()
     setPeople(username)
     person = personDict[username]
     if username == person["Username"] and password == person["Password"]:
-        person["loggedIn"] = True
         loggedIn(person)
     else:
         topText("Invalid account, heading back to start")
         startMenu()
 
 def loggedIn(person):
-    if person["loggedIn"] == False:
-        topText("This account is not logged in")
-        startMenu()
-
     topText("Successfully Logged in")
     print "1: Edit your account"
     print "2: Logout"
@@ -99,7 +95,7 @@ def loggedIn(person):
     if option == "1":
         topText("Choose an option")
         editAccount(person,False)
-    if option == "2": logout(person)
+    if option == "2": logout(person["Username"])
     if option != "1" or option != "2":
         topText("Invalid option, heading back to account page")
         loggedIn(person)
@@ -132,7 +128,6 @@ def changeInfo(person, attrb, fromEditAccPage):
 
 
 def logout(person):
-    person["loggedIn"] = False
     topText("Successfully signed out, heading back to start")
     startMenu()
 
@@ -156,8 +151,8 @@ def setPeople(name):
         startMenu()
 
     numPeople = getNumPeople()
-    if numPeople < 0:
-        print 'Less than 0 people'
+    if numPeople <= 0:
+        print '0 people or less'
         return None
     else:
         for x in range(0,numPeople):
@@ -170,8 +165,7 @@ def setPeople(name):
                 "Age": person["Age"],
                 "Gender": person["Gender"],
                 "Hobby": person["Hobby"],
-                "Description": person["Description"],
-                "loggedIn": False
+                "Description": person["Description"]
             }
 
 def topText(msg):
